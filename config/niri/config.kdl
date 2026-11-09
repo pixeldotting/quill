@@ -1,0 +1,165 @@
+// Niri + Material You (цвета подтягиваются из colors.kdl, который генерирует matugen)
+// Проверка конфига: niri validate
+
+input {
+    keyboard {
+        xkb {
+            layout "us,ru"
+            options "grp:alt_shift_toggle"
+        }
+        numlock
+    }
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+    }
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+// Мониторы: узнать имена — `niri msg outputs`
+// output "eDP-1" {
+//     scale 1.25
+// }
+
+layout {
+    gaps 12
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+
+    shadow {
+        on
+        softness 30
+        spread 4
+        offset x=0 y=6
+        color "#00000066"
+    }
+    // focus-ring / border / insert-hint — в colors.kdl
+}
+
+prefer-no-csd
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+hotkey-overlay { skip-at-startup; }
+
+environment {
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+}
+
+// Скругления окон в стиле Material 3
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+}
+
+// Обои от Quickshell видны и в overview
+layer-rule {
+    match namespace="^qs-wallpaper$"
+    place-within-backdrop true
+}
+
+// ---- автозапуск ----
+spawn-at-startup "quickshell"
+spawn-at-startup "sh" "-c" "$HOME/.config/quickshell/scripts/theme.sh restore"
+// Polkit-агент — единственная не-quickshell штука (иначе не будет окон «введите пароль»)
+spawn-at-startup "/usr/libexec/polkit-gnome-authentication-agent-1"
+
+binds {
+    // --- Quickshell ---
+    Mod+Space hotkey-overlay-title="Лаунчер" { spawn "qs" "ipc" "call" "launcher" "toggle"; }
+    Mod+C hotkey-overlay-title="Центр управления" { spawn "qs" "ipc" "call" "control" "toggle"; }
+    Mod+W hotkey-overlay-title="Обои" { spawn "qs" "ipc" "call" "wallpapers" "toggle"; }
+    Mod+Shift+E hotkey-overlay-title="Меню питания" { spawn "qs" "ipc" "call" "power" "toggle"; }
+
+    Mod+Return hotkey-overlay-title="Терминал" { spawn "ghostty"; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // --- окна ---
+    Mod+Q { close-window; }
+    Mod+Left  { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Down  { focus-window-or-workspace-down; }
+    Mod+Up    { focus-window-or-workspace-up; }
+    Mod+H { focus-column-left; }
+    Mod+L { focus-column-right; }
+    Mod+J { focus-window-or-workspace-down; }
+    Mod+K { focus-window-or-workspace-up; }
+
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+Down  { move-window-down-or-to-workspace-down; }
+    Mod+Ctrl+Up    { move-window-up-or-to-workspace-up; }
+    Mod+Ctrl+H { move-column-left; }
+    Mod+Ctrl+L { move-column-right; }
+    Mod+Ctrl+J { move-window-down-or-to-workspace-down; }
+    Mod+Ctrl+K { move-window-up-or-to-workspace-up; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    Mod+R { switch-preset-column-width; }
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+C { center-column; }
+    Mod+V { toggle-window-floating; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+
+    Mod+Tab { toggle-overview; }
+
+    // --- рабочие столы ---
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+Shift+WheelScrollDown { focus-column-right; }
+    Mod+Shift+WheelScrollUp   { focus-column-left; }
+
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    // --- скриншоты (встроенные в niri) ---
+    Print      { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print  { screenshot-window; }
+
+    // --- звук / яркость / медиа ---
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "-l" "1.0" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "5%+"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+    XF86AudioPlay allow-when-locked=true { spawn "qs" "ipc" "call" "media" "playPause"; }
+    XF86AudioNext allow-when-locked=true { spawn "qs" "ipc" "call" "media" "next"; }
+    XF86AudioPrev allow-when-locked=true { spawn "qs" "ipc" "call" "media" "previous"; }
+
+    Mod+Shift+P { power-off-monitors; }
+    Mod+Shift+Ctrl+E { quit; }
+}
+
+// Цвета Material You — в самом конце, чтобы перекрывать всё остальное
+include "colors.kdl"

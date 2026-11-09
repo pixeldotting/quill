@@ -1,0 +1,17 @@
+layout {
+    focus-ring {
+        on
+        width 2
+        active-color "{{colors.primary.default.hex}}"
+        inactive-color "{{colors.outline_variant.default.hex}}"
+        urgent-color "{{colors.error.default.hex}}"
+    }
+    border { off; }
+    insert-hint {
+        color "{{colors.primary.default.hex}}80"
+    }
+}
+
+overview {
+    backdrop-color "{{colors.surface_container_lowest.default.hex}}"
+}

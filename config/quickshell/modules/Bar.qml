@@ -1,0 +1,182 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+import Quickshell.Wayland
+import Quickshell.Services.SystemTray
+import qs.services
+import qs.components
+
+// Верхняя панель: три «островка» (слева / по центру / справа) на прозрачном фоне
+Variants {
+    model: Quickshell.screens
+
+    PanelWindow {
+        id: bar
+        required property var modelData
+        screen: modelData
+
+        anchors { top: true; left: true; right: true }
+        margins { top: 8; left: 12; right: 12 }
+        implicitHeight: 40
+        color: "transparent"
+        WlrLayershell.namespace: "qs-bar"
+
+        SystemClock {
+            id: clock
+            precision: SystemClock.Minutes
+        }
+
+        // ================= слева =================
+        RowLayout {
+            anchors.left: parent.left
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 8
+
+            Pill {
+                IconButton {
+                    icon: "apps"
+                    iconSize: 20
+                    implicitWidth: 32
+                    implicitHeight: 32
+                    tone: Theme.primary
+                    onClicked: UiState.toggle("launcher")
+                }
+
+                // Рабочие столы: активный — вытянутая «таблетка» primary
+                RowLayout {
+                    spacing: 6
+                    Repeater {
+                        model: Niri.forOutput(bar.modelData.name)
+                        Rectangle {
+                            required property var modelData
+                            Layout.alignment: Qt.AlignVCenter
+                            implicitWidth: modelData.is_active ? 28 : 10
+                            implicitHeight: 10
+                            radius: 5
+                            color: modelData.is_active ? Theme.primary
+                                 : modelData.active_window_id != null ? Theme.onSurfaceVariant
+                                 : Theme.outlineVariant
+                            Behavior on implicitWidth {
+                                NumberAnimation { duration: 280; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.emphasized }
+                            }
+                            Behavior on color { ColorAnimation { duration: Theme.durShort } }
+                            MouseArea {
+                                anchors.fill: parent
+                                anchors.margins: -5
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: Niri.focusWorkspace(modelData.idx)
+                            }
+                        }
+                    }
+                }
+            }
+
+            Pill {
+                visible: Niri.windowTitle !== ""
+                padding: 14
+                Label {
+                    Layout.maximumWidth: 320
+                    text: Niri.windowTitle
+                    color: Theme.onSurfaceVariant
+                }
+            }
+        }
+
+        // ================= по центру =================
+        Pill {
+            anchors.centerIn: parent
+            padding: 16
+            Label {
+                text: Qt.formatDateTime(clock.date, "HH:mm")
+                font.pixelSize: 15
+                font.weight: Font.Medium
+            }
+            Label {
+                text: Qt.formatDateTime(clock.date, "ddd, d MMM")
+                color: Theme.onSurfaceVariant
+            }
+        }
+
+        // ================= справа =================
+        RowLayout {
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 8
+
+            // Трей
+            Pill {
+                visible: SystemTray.items.values.length > 0
+                Repeater {
+                    model: SystemTray.items
+                    Item {
+                        id: trayItem
+                        required property var modelData
+                        implicitWidth: 28
+                        implicitHeight: 28
+
+                        Image {
+                            anchors.centerIn: parent
+                            width: 18
+                            height: 18
+                            sourceSize.width: 36
+                            sourceSize.height: 36
+                            source: trayItem.modelData.icon
+                        }
+
+                        QsMenuAnchor {
+                            id: menu
+                            menu: trayItem.modelData.menu
+                            anchor.window: bar
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            acceptedButtons: Qt.LeftButton | Qt.RightButton
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: mouse => {
+                                if (mouse.button === Qt.LeftButton && !trayItem.modelData.onlyMenu) {
+                                    trayItem.modelData.activate()
+                                } else if (trayItem.modelData.hasMenu) {
+                                    const p = trayItem.mapToItem(null, 0, 0)
+                                    menu.anchor.rect = Qt.rect(p.x, bar.height + 4, trayItem.width, 1)
+                                    menu.open()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Статус: сеть, звук, батарея → центр управления
+            Pill {
+                clickable: true
+                padding: 14
+                spacing: 10
+                onClicked: UiState.toggle("controlCenter")
+
+                Icon { text: System.netIcon; size: 20; color: Theme.onSurface }
+                Icon { text: UiState.dnd ? "notifications_off" : System.volumeIcon; size: 20; color: Theme.onSurface }
+                RowLayout {
+                    visible: System.hasBattery
+                    spacing: 2
+                    Icon {
+                        text: System.batteryIcon
+                        size: 20
+                        color: System.batteryPercent < 15 && !System.charging ? Theme.error : Theme.onSurface
+                    }
+                    Label {
+                        text: System.batteryPercent + "%"
+                        font.pixelSize: 13
+                    }
+                }
+            }
+
+            IconButton {
+                icon: "power_settings_new"
+                tone: Theme.onErrorContainer
+                fill: Theme.errorContainer
+                onClicked: UiState.toggle("powerMenu")
+            }
+        }
+    }
+}
