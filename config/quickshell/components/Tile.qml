@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// Тайл быстрых настроек. При нажатии форма «морфится» из пилюли в скруглённый прямоугольник (M3 Expressive)
+// Toggle-тайл быстрых настроек. Нажатие: пилюля → скруглённый прямоугольник (пружина). Активный: primary + filled-иконка.
 Rectangle {
     id: root
     property string icon
@@ -15,15 +15,15 @@ Rectangle {
     implicitHeight: 64
     radius: ma.pressed ? Theme.radiusLg : height / 2
     color: active ? Theme.primary : Theme.surfaceContainerHighest
-    Behavior on radius { NumberAnimation { duration: 200; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.emphasized } }
-    Behavior on color { ColorAnimation { duration: Theme.durShort } }
+    Behavior on radius { SpatialAnim { speed: "fast" } }
+    Behavior on color { EffectsColor {} }
 
     Rectangle {
         anchors.fill: parent
         radius: parent.radius
         color: root.active ? Theme.onPrimary : Theme.onSurface
-        opacity: ma.containsMouse ? 0.08 : 0
-        Behavior on opacity { NumberAnimation { duration: 120 } }
+        opacity: ma.pressed ? Theme.statePress : ma.containsMouse ? Theme.stateHover : 0
+        Behavior on opacity { EffectsNumber { speed: "fast" } }
     }
 
     RowLayout {
@@ -35,6 +35,7 @@ Rectangle {
         Icon {
             text: root.icon
             size: 24
+            filled: root.active
             color: root.active ? Theme.onPrimary : Theme.onSurfaceVariant
         }
         ColumnLayout {
@@ -42,15 +43,15 @@ Rectangle {
             spacing: 0
             Label {
                 Layout.fillWidth: true
+                role: "titleSmall"
                 text: root.title
-                font.weight: Font.Medium
                 color: root.active ? Theme.onPrimary : Theme.onSurface
             }
             Label {
                 Layout.fillWidth: true
                 visible: root.subtitle !== ""
+                role: "bodySmall"
                 text: root.subtitle
-                font.pixelSize: 12
                 color: root.active ? Theme.onPrimary : Theme.onSurfaceVariant
                 opacity: 0.85
             }

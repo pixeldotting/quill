@@ -3,13 +3,14 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Полноэкранный оверлей: клик вне карточки или Esc → dismissed()
-// Содержимое (карточки) кладётся внутрь как дочерние элементы.
+// Полноэкранный оверлей: клик вне карточки или Esc → dismissed().
+// progress (effects) — для opacity; pop (expressive spatial, с перерегулированием) — для scale.
 PanelWindow {
     id: root
     property bool open: false
     property bool dim: true
-    property real progress: 0          // 0→1 при открытии (для анимации появления)
+    property real progress: 0
+    property real pop: 0
     default property alias content: holder.data
     signal dismissed()
 
@@ -21,17 +22,23 @@ PanelWindow {
     WlrLayershell.namespace: "qs-overlay"
     WlrLayershell.keyboardFocus: open ? WlrKeyboardFocus.Exclusive : WlrKeyboardFocus.None
 
-    onOpenChanged: if (open) openAnim.restart()
+    onOpenChanged: if (open) { fadeAnim.restart(); popAnim.restart() }
 
-    NumberAnimation {
-        id: openAnim
+    EffectsNumber {
+        id: fadeAnim
         target: root
         property: "progress"
         from: 0
         to: 1
-        duration: 280
-        easing.type: Easing.BezierSpline
-        easing.bezierCurve: Theme.emphasized
+        speed: "default"
+    }
+    SpatialAnim {
+        id: popAnim
+        target: root
+        property: "pop"
+        from: 0
+        to: 1
+        speed: "default"
     }
 
     Item {

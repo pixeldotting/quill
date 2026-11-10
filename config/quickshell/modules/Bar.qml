@@ -42,7 +42,7 @@ Variants {
                     onClicked: UiState.toggle("launcher")
                 }
 
-                // Рабочие столы: активный — вытянутая «таблетка» primary
+                // Рабочие столы: индикатор как в M3 Navigation bar — активный вытягивается в пилюлю primary
                 RowLayout {
                     spacing: 6
                     Repeater {
@@ -56,10 +56,8 @@ Variants {
                             color: modelData.is_active ? Theme.primary
                                  : modelData.active_window_id != null ? Theme.onSurfaceVariant
                                  : Theme.outlineVariant
-                            Behavior on implicitWidth {
-                                NumberAnimation { duration: 280; easing.type: Easing.BezierSpline; easing.bezierCurve: Theme.emphasized }
-                            }
-                            Behavior on color { ColorAnimation { duration: Theme.durShort } }
+                            Behavior on implicitWidth { SpatialAnim { speed: "default" } }
+                            Behavior on color { EffectsColor {} }
                             MouseArea {
                                 anchors.fill: parent
                                 anchors.margins: -5
@@ -76,6 +74,7 @@ Variants {
                 padding: 14
                 Label {
                     Layout.maximumWidth: 320
+                    role: "labelLarge"
                     text: Niri.windowTitle
                     color: Theme.onSurfaceVariant
                 }
@@ -85,13 +84,15 @@ Variants {
         // ================= по центру =================
         Pill {
             anchors.centerIn: parent
-            padding: 16
+            padding: 18
+            spacing: 10
             Label {
+                role: "titleMedium"
+                emphasized: true
                 text: Qt.formatDateTime(clock.date, "HH:mm")
-                font.pixelSize: 15
-                font.weight: Font.Medium
             }
             Label {
+                role: "labelLarge"
                 text: Qt.formatDateTime(clock.date, "ddd, d MMM")
                 color: Theme.onSurfaceVariant
             }
@@ -165,8 +166,8 @@ Variants {
                         color: System.batteryPercent < 15 && !System.charging ? Theme.error : Theme.onSurface
                     }
                     Label {
+                        role: "labelMedium"
                         text: System.batteryPercent + "%"
-                        font.pixelSize: 13
                     }
                 }
             }

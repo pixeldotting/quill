@@ -28,6 +28,12 @@ if [ ! -f "$HOME/.local/share/fonts/MaterialSymbolsRounded.ttf" ]; then
     fc-cache -f
 fi
 
+echo "==> Шрифт Roboto Flex (шрифт M3 Expressive; без него будет Roboto)"
+if [ ! -f "$HOME/.local/share/fonts/RobotoFlex.ttf" ]; then
+    curl -fL "https://github.com/google/fonts/raw/main/ofl/robotoflex/RobotoFlex%5BGRAD%2CXOPQ%2CXTRA%2CYOPQ%2CYTAS%2CYTDE%2CYTFI%2CYTLC%2CYTUC%2Copsz%2Cslnt%2Cwdth%2Cwght%5D.ttf" \
+        -o "$HOME/.local/share/fonts/RobotoFlex.ttf" && fc-cache -f || echo "   не скачался — используем Roboto"
+fi
+
 echo "==> Симлинки"
 link() {
     local src="$1" dst="$2"

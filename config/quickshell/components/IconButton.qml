@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// Круглая иконка-кнопка со state layer (hover 8% / press 12%) по M3
+// Иконка-кнопка M3 Expressive: state layers (hover 8% / press 10%), при нажатии форма морфится из круга в скруглённый квадрат
 Item {
     id: root
     property string icon
@@ -17,16 +17,17 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: height / 2
+        radius: ma.pressed ? Theme.radiusMd : height / 2
         color: root.toggled ? Theme.secondaryContainer : root.fill
-        Behavior on color { ColorAnimation { duration: Theme.durShort } }
+        Behavior on radius { SpatialAnim { speed: "fast" } }
+        Behavior on color { EffectsColor {} }
 
         Rectangle {
             anchors.fill: parent
             radius: parent.radius
             color: root.toggled ? Theme.onSecondaryContainer : root.tone
-            opacity: ma.pressed ? 0.12 : ma.containsMouse ? 0.08 : 0
-            Behavior on opacity { NumberAnimation { duration: 120 } }
+            opacity: ma.pressed ? Theme.statePress : ma.containsMouse ? Theme.stateHover : 0
+            Behavior on opacity { EffectsNumber { speed: "fast" } }
         }
     }
 
@@ -34,6 +35,7 @@ Item {
         anchors.centerIn: parent
         text: root.icon
         size: root.iconSize
+        filled: root.toggled
         color: root.toggled ? Theme.onSecondaryContainer : root.tone
     }
 

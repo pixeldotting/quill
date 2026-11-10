@@ -4,7 +4,8 @@ import Quickshell
 import qs.services
 import qs.components
 
-// Лаунчер приложений (вместо rofi/wofi/fuzzel). Mod+Space
+// Лаунчер (вместо rofi/wofi). Mod+Space.
+// Список — «сегментированный» (M3 Expressive): крайние элементы крупно скруглены, внутренние 4dp, выбранный морфится в пилюлю.
 Overlay {
     id: win
     open: UiState.launcherOpen
@@ -49,11 +50,12 @@ Overlay {
         height: col.implicitHeight + 24
         x: (parent.width - width) / 2
         y: parent.height * 0.16
-        radius: Theme.radiusXl
+        radius: Theme.radiusXlInc
         color: Theme.surfaceContainer
         opacity: win.progress
-        scale: 0.96 + 0.04 * win.progress
+        scale: 0.9 + 0.1 * win.pop
 
+        Shadow { level: 3 }
         MouseArea { anchors.fill: parent }   // не пропускать клики на scrim
 
         ColumnLayout {
@@ -80,8 +82,8 @@ Overlay {
                         Label {
                             anchors.verticalCenter: parent.verticalCenter
                             visible: input.text === ""
+                            role: "bodyLarge"
                             text: "Поиск приложений"
-                            font.pixelSize: 16
                             color: Theme.onSurfaceVariant
                         }
                         TextInput {
@@ -89,7 +91,8 @@ Overlay {
                             anchors.fill: parent
                             verticalAlignment: TextInput.AlignVCenter
                             font.family: Theme.fontSans
-                            font.pixelSize: 16
+                            font.pixelSize: Theme.typeScale.bodyLarge.size
+                            font.letterSpacing: Theme.typeScale.bodyLarge.track
                             color: Theme.onSurface
                             selectionColor: Theme.primary
                             selectedTextColor: Theme.onPrimary
@@ -118,8 +121,9 @@ Overlay {
             ListView {
                 id: list
                 Layout.fillWidth: true
-                implicitHeight: count * 56
+                implicitHeight: count > 0 ? count * 56 + (count - 1) * 2 : 0
                 interactive: false
+                spacing: 2
                 currentIndex: 0
 
                 model: ScriptModel {
@@ -131,16 +135,20 @@ Overlay {
                     id: row
                     required property var modelData
                     required property int index
+                    readonly property bool current: ListView.isCurrentItem
                     width: ListView.view.width
                     height: 56
-                    radius: height / 2
-                    color: ListView.isCurrentItem ? Theme.secondaryContainer : "transparent"
-                    Behavior on color { ColorAnimation { duration: 100 } }
+                    radius: current ? height / 2
+                          : (index === 0 || index === ListView.view.count - 1) ? Theme.radiusLgInc
+                          : Theme.radiusXs
+                    color: current ? Theme.secondaryContainer : Theme.surfaceContainerHigh
+                    Behavior on radius { SpatialAnim { speed: "fast" } }
+                    Behavior on color { EffectsColor { speed: "fast" } }
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: 14
-                        anchors.rightMargin: 18
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 20
                         spacing: 14
                         Image {
                             Layout.preferredWidth: 32
@@ -154,16 +162,17 @@ Overlay {
                             spacing: 0
                             Label {
                                 Layout.fillWidth: true
+                                role: "bodyLarge"
                                 text: row.modelData.name
-                                font.pixelSize: 15
-                                color: row.ListView.isCurrentItem ? Theme.onSecondaryContainer : Theme.onSurface
+                                color: row.current ? Theme.onSecondaryContainer : Theme.onSurface
                             }
                             Label {
                                 Layout.fillWidth: true
                                 visible: text !== ""
+                                role: "bodySmall"
                                 text: row.modelData.comment ?? ""
-                                font.pixelSize: 12
-                                color: Theme.onSurfaceVariant
+                                color: row.current ? Theme.onSecondaryContainer : Theme.onSurfaceVariant
+                                opacity: 0.8
                             }
                         }
                     }

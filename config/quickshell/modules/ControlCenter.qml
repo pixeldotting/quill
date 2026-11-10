@@ -18,12 +18,13 @@ Overlay {
         anchors.right: parent.right
         anchors.topMargin: 56
         anchors.rightMargin: 12
-        radius: Theme.radiusXl
+        radius: Theme.radiusXlInc
         color: Theme.surfaceContainer
         opacity: win.progress
-        scale: 0.94 + 0.06 * win.progress
+        scale: 0.9 + 0.1 * win.pop
         transformOrigin: Item.TopRight
 
+        Shadow { level: 3 }
         MouseArea { anchors.fill: parent }
 
         ColumnLayout {
@@ -59,9 +60,9 @@ Overlay {
                     onClicked: UiState.dnd = !UiState.dnd
                 }
                 Tile {
-                    icon: "wallpaper"
-                    title: "Обои"
-                    subtitle: "Сменить и перекрасить"
+                    icon: "palette"
+                    title: "Оформление"
+                    subtitle: "Обои и палитра"
                     onClicked: UiState.toggle("wallpapers")
                 }
             }
@@ -108,13 +109,13 @@ Overlay {
                         spacing: 0
                         Label {
                             Layout.fillWidth: true
+                            role: "titleMedium"
                             text: System.player ? (System.player.trackTitle || "Без названия") : ""
-                            font.weight: Font.Medium
                         }
                         Label {
                             Layout.fillWidth: true
+                            role: "bodyMedium"
                             text: System.player ? System.player.trackArtist : ""
-                            font.pixelSize: 12
                             color: Theme.onSurfaceVariant
                         }
                     }
@@ -125,6 +126,7 @@ Overlay {
                     IconButton {
                         icon: System.player?.isPlaying ? "pause" : "play_arrow"
                         iconSize: 26
+                        toggled: false
                         tone: Theme.onPrimary
                         fill: Theme.primary
                         implicitWidth: 48

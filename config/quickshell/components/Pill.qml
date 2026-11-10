@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// «Островок» панели: скруглённая поверхность surface-container с содержимым в ряд
+// «Островок» панели: поверхность surface-container, радиус full
 Rectangle {
     id: root
     default property alias content: row.data
@@ -13,15 +13,16 @@ Rectangle {
 
     implicitHeight: 40
     implicitWidth: row.implicitWidth + padding * 2
-    radius: height / 2
+    radius: ma.pressed && clickable ? Theme.radiusLg : height / 2
     color: Theme.surfaceContainer
+    Behavior on radius { SpatialAnim { speed: "fast" } }
 
     Rectangle {
         anchors.fill: parent
         radius: parent.radius
         color: Theme.onSurface
-        opacity: root.clickable && ma.containsMouse ? 0.08 : 0
-        Behavior on opacity { NumberAnimation { duration: 120 } }
+        opacity: root.clickable ? (ma.pressed ? Theme.statePress : ma.containsMouse ? Theme.stateHover : 0) : 0
+        Behavior on opacity { EffectsNumber { speed: "fast" } }
     }
 
     MouseArea {

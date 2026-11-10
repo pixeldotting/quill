@@ -5,7 +5,7 @@ import Quickshell.Wayland
 import qs.services
 import qs.components
 
-// OSD громкости (срабатывает на клавиши громкости через wpctl)
+// OSD громкости с волнистым индикатором (M3 Expressive). Срабатывает на клавиши громкости (wpctl).
 Scope {
     id: root
     property bool shown: false
@@ -18,7 +18,7 @@ Scope {
     }
 
     Timer { interval: 2500; running: true; onTriggered: root.ready = true }   // не мигать при старте
-    Timer { id: hideTimer; interval: 1600; onTriggered: root.shown = false }
+    Timer { id: hideTimer; interval: 1800; onTriggered: root.shown = false }
 
     Connections {
         target: System.sink?.audio ?? null
@@ -29,19 +29,23 @@ Scope {
     PanelWindow {
         visible: root.shown
         anchors.bottom: true
-        margins.bottom: 72
-        implicitWidth: 300
-        implicitHeight: 64
+        margins.bottom: 48                  // 24px внутреннего поля под тень
+        implicitWidth: 348
+        implicitHeight: 112
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
-        mask: Region {}        // клики проходят насквозь
+        mask: Region {}                     // клики проходят насквозь
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.namespace: "qs-osd"
 
         Rectangle {
-            anchors.fill: parent
+            id: box
+            anchors.centerIn: parent
+            width: 300
+            height: 64
             radius: height / 2
             color: Theme.surfaceContainerHigh
+            Shadow { level: 3 }
 
             RowLayout {
                 anchors.fill: parent
@@ -49,27 +53,21 @@ Scope {
                 anchors.rightMargin: 24
                 spacing: 14
 
-                Icon { text: System.volumeIcon; size: 26; color: Theme.onSurface }
+                Icon { text: System.volumeIcon; size: 26; filled: true; color: Theme.onSurface }
 
-                Rectangle {
+                WavyProgress {
                     Layout.fillWidth: true
-                    implicitHeight: 12
-                    radius: 6
-                    color: Theme.secondaryContainer
-                    Rectangle {
-                        width: parent.width * (System.muted ? 0 : Math.min(1, System.volume))
-                        height: parent.height
-                        radius: 6
-                        color: Theme.primary
-                        Behavior on width { NumberAnimation { duration: 120 } }
-                    }
+                    Layout.alignment: Qt.AlignVCenter
+                    value: System.muted ? 0 : Math.min(1, System.volume)
+                    animate: root.shown && !System.muted
                 }
 
                 Label {
-                    Layout.preferredWidth: 38
+                    Layout.preferredWidth: 40
                     horizontalAlignment: Text.AlignRight
+                    role: "labelLarge"
+                    emphasized: true
                     text: System.muted ? "—" : Math.round(System.volume * 100) + "%"
-                    font.weight: Font.Medium
                 }
             }
         }

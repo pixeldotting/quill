@@ -3,13 +3,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Material 3 (Material You) токены.
-// Цвета читаются из ~/.local/state/material/colors.json (его пишет matugen)
-// и обновляются на лету. Значения по умолчанию — baseline-тема M3 (dark).
+// Material 3 / Material You токены: цвет, форма, типографика, движение, state layers, elevation.
+// Цвета читаются из ~/.local/state/material/colors.json (пишет matugen) и обновляются на лету.
+// Значения по умолчанию — baseline-тема M3 (dark).
 Singleton {
     id: root
 
-    // ---- цветовые роли ----
+    // ================= ЦВЕТ (29+ ролей) =================
     readonly property color primary: c.primary
     readonly property color onPrimary: c.on_primary
     readonly property color primaryContainer: c.primary_container
@@ -30,6 +30,8 @@ Singleton {
     readonly property color onSurface: c.on_surface
     readonly property color surfaceVariant: c.surface_variant
     readonly property color onSurfaceVariant: c.on_surface_variant
+    readonly property color surfaceDim: c.surface_dim
+    readonly property color surfaceBright: c.surface_bright
     readonly property color surfaceContainerLowest: c.surface_container_lowest
     readonly property color surfaceContainerLow: c.surface_container_low
     readonly property color surfaceContainer: c.surface_container
@@ -43,21 +45,62 @@ Singleton {
     readonly property color scrim: c.scrim
     readonly property color shadow: c.shadow
 
-    // ---- форма (M3 shape scale) ----
+    // ================= ФОРМА: M3 shape scale (+ Expressive) =================
+    readonly property int radiusNone: 0
     readonly property int radiusXs: 4
     readonly property int radiusSm: 8
     readonly property int radiusMd: 12
     readonly property int radiusLg: 16
+    readonly property int radiusLgInc: 20     // large-increased (Expressive)
     readonly property int radiusXl: 28
+    readonly property int radiusXlInc: 32     // extra-large-increased (Expressive)
+    readonly property int radiusXxl: 48
+    // full = height / 2
 
-    // ---- типографика ----
-    readonly property string fontSans: "Roboto"
+    // ================= ТИПОГРАФИКА: 15 ролей M3 =================
+    // Roboto Flex — шрифт M3 Expressive; если не установлен, Roboto.
+    readonly property string fontSans: Qt.fontFamilies().indexOf("Roboto Flex") >= 0 ? "Roboto Flex" : "Roboto"
     readonly property string fontIcon: "Material Symbols Rounded"
+    readonly property var typeScale: ({
+        displayLarge: { size: 57, line: 64, weight: 400, track: -0.25 },
+        displayMedium: { size: 45, line: 52, weight: 400, track: 0 },
+        displaySmall: { size: 36, line: 44, weight: 400, track: 0 },
+        headlineLarge: { size: 32, line: 40, weight: 400, track: 0 },
+        headlineMedium: { size: 28, line: 36, weight: 400, track: 0 },
+        headlineSmall: { size: 24, line: 32, weight: 400, track: 0 },
+        titleLarge: { size: 22, line: 28, weight: 400, track: 0 },
+        titleMedium: { size: 16, line: 24, weight: 500, track: 0.15 },
+        titleSmall: { size: 14, line: 20, weight: 500, track: 0.1 },
+        bodyLarge: { size: 16, line: 24, weight: 400, track: 0.5 },
+        bodyMedium: { size: 14, line: 20, weight: 400, track: 0.25 },
+        bodySmall: { size: 12, line: 16, weight: 400, track: 0.4 },
+        labelLarge: { size: 14, line: 20, weight: 500, track: 0.1 },
+        labelMedium: { size: 12, line: 16, weight: 500, track: 0.5 },
+        labelSmall: { size: 11, line: 16, weight: 500, track: 0.5 }
+    })
 
-    // ---- движение (M3 emphasized easing) ----
-    readonly property var emphasized: [0.2, 0, 0, 1, 1, 1]
-    readonly property int durShort: 150
-    readonly property int durMedium: 300
+    // ================= ДВИЖЕНИЕ: M3 Expressive =================
+    // spatial (размер, позиция, морф формы) — пружина с лёгким перерегулированием;
+    // effects (цвет, прозрачность) — без перерегулирования.
+    readonly property var spatialFast:    [0.42, 1.67, 0.21, 0.90, 1, 1]
+    readonly property var spatialDefault: [0.38, 1.21, 0.22, 1.00, 1, 1]
+    readonly property var spatialSlow:    [0.39, 1.29, 0.35, 0.98, 1, 1]
+    readonly property var effectsFast:    [0.31, 0.94, 0.34, 1.00, 1, 1]
+    readonly property var effectsDefault: [0.34, 0.80, 0.34, 1.00, 1, 1]
+    readonly property var effectsSlow:    [0.34, 0.88, 0.34, 1.00, 1, 1]
+    readonly property int durSpatialFast: 350
+    readonly property int durSpatialDefault: 500
+    readonly property int durSpatialSlow: 650
+    readonly property int durEffectsFast: 150
+    readonly property int durEffectsDefault: 200
+    readonly property int durEffectsSlow: 300
+
+    // ================= STATE LAYERS =================
+    readonly property real stateHover: 0.08
+    readonly property real stateFocus: 0.10
+    readonly property real statePress: 0.10
+    readonly property real stateDrag: 0.16
+    readonly property real disabledContent: 0.38
 
     FileView {
         path: Quickshell.env("HOME") + "/.local/state/material/colors.json"
@@ -87,6 +130,8 @@ Singleton {
             property string on_surface: "#E6E0E9"
             property string surface_variant: "#49454F"
             property string on_surface_variant: "#CAC4D0"
+            property string surface_dim: "#141218"
+            property string surface_bright: "#3B383E"
             property string surface_container_lowest: "#0F0D13"
             property string surface_container_low: "#1D1B20"
             property string surface_container: "#211F26"

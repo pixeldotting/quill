@@ -113,6 +113,34 @@ Singleton {
     // ---------- медиа (MPRIS) ----------
     readonly property var player: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
 
+    // ---------- стиль палитры и контраст (читает/пишет theme.sh) ----------
+    property string scheme: "scheme-tonal-spot"
+    property real contrast: 0
+
+    function setScheme(s) {
+        scheme = s
+        Quickshell.execDetached([themeScript, "scheme", s])
+    }
+    function setContrast(v) {
+        contrast = v
+        Quickshell.execDetached([themeScript, "contrast", String(v)])
+    }
+
+    FileView {
+        path: Quickshell.env("HOME") + "/.local/state/material/scheme"
+        watchChanges: true
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: root.scheme = text().trim() || "scheme-tonal-spot"
+    }
+    FileView {
+        path: Quickshell.env("HOME") + "/.local/state/material/contrast"
+        watchChanges: true
+        printErrors: false
+        onFileChanged: reload()
+        onLoaded: root.contrast = parseFloat(text().trim()) || 0
+    }
+
     // ---------- тёмная / светлая тема ----------
     property bool dark: true
 

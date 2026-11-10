@@ -6,7 +6,8 @@ import Quickshell.Widgets
 import qs.services
 import qs.components
 
-// Выбор обоев из ~/Pictures/Wallpapers: клик → смена обоев и перекраска всей системы (matugen). Mod+W
+// Оформление: стиль палитры (Android: Tonal Spot / Expressive / Fruit Salad / Rainbow …), контраст
+// и выбор обоев из ~/Pictures/Wallpapers. Клик → перекрашивается вся система. Mod+W
 Overlay {
     id: win
     open: UiState.wallpapersOpen
@@ -14,35 +15,82 @@ Overlay {
 
     Rectangle {
         anchors.centerIn: parent
-        width: Math.min(parent.width - 80, 780)
-        height: Math.min(parent.height - 120, 540)
-        radius: Theme.radiusXl
+        width: Math.min(parent.width - 80, 800)
+        height: Math.min(parent.height - 100, 620)
+        radius: Theme.radiusXlInc
         color: Theme.surfaceContainer
         opacity: win.progress
-        scale: 0.96 + 0.04 * win.progress
+        scale: 0.9 + 0.1 * win.pop
 
+        Shadow { level: 4 }
         MouseArea { anchors.fill: parent }
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 20
-            spacing: 12
+            anchors.margins: 24
+            spacing: 14
 
             RowLayout {
                 Layout.fillWidth: true
-                Icon { text: "wallpaper"; size: 26; color: Theme.primary }
+                Icon { text: "palette"; size: 28; filled: true; color: Theme.primary }
                 Label {
                     Layout.fillWidth: true
-                    text: "Обои"
-                    font.pixelSize: 20
-                    font.weight: Font.Medium
+                    role: "headlineSmall"
+                    text: "Оформление"
                 }
                 IconButton { icon: "close"; onClicked: win.dismissed() }
             }
 
+            // ---- стиль палитры ----
+            Label { role: "labelLarge"; text: "Стиль палитры"; color: Theme.onSurfaceVariant }
+            Flow {
+                Layout.fillWidth: true
+                spacing: 8
+                Repeater {
+                    model: [
+                        { id: "scheme-tonal-spot",  name: "Tonal spot" },
+                        { id: "scheme-expressive",  name: "Expressive" },
+                        { id: "scheme-fruit-salad", name: "Fruit salad" },
+                        { id: "scheme-rainbow",     name: "Rainbow" },
+                        { id: "scheme-fidelity",    name: "Fidelity" },
+                        { id: "scheme-neutral",     name: "Neutral" },
+                        { id: "scheme-monochrome",  name: "Monochrome" }
+                    ]
+                    Chip {
+                        required property var modelData
+                        text: modelData.name
+                        selected: System.scheme === modelData.id
+                        onClicked: System.setScheme(modelData.id)
+                    }
+                }
+            }
+
+            // ---- контраст ----
+            Label { role: "labelLarge"; text: "Контраст"; color: Theme.onSurfaceVariant }
+            Flow {
+                Layout.fillWidth: true
+                spacing: 8
+                Repeater {
+                    model: [
+                        { v: 0.0, name: "Стандартный" },
+                        { v: 0.5, name: "Средний" },
+                        { v: 1.0, name: "Высокий" }
+                    ]
+                    Chip {
+                        required property var modelData
+                        text: modelData.name
+                        selected: Math.abs(System.contrast - modelData.v) < 0.01
+                        onClicked: System.setContrast(modelData.v)
+                    }
+                }
+            }
+
+            // ---- обои ----
+            Label { role: "labelLarge"; text: "Обои"; color: Theme.onSurfaceVariant }
             Label {
                 Layout.fillWidth: true
                 visible: grid.count === 0
+                role: "bodyMedium"
                 text: "Положи картинки в ~/Pictures/Wallpapers"
                 color: Theme.onSurfaceVariant
             }
@@ -74,10 +122,12 @@ Overlay {
                     ClippingRectangle {
                         anchors.fill: parent
                         anchors.margins: 5
-                        radius: 20
+                        // текущие обои — «таблетка»-скругление, hover — мягче
+                        radius: cell.current ? Theme.radiusXl : (ma.containsMouse ? Theme.radiusLgInc : Theme.radiusLg)
                         color: Theme.surfaceContainerHighest
                         border.width: cell.current ? 3 : 0
                         border.color: Theme.primary
+                        Behavior on radius { SpatialAnim { speed: "default" } }
 
                         Image {
                             anchors.fill: parent
@@ -85,8 +135,8 @@ Overlay {
                             fillMode: Image.PreserveAspectCrop
                             asynchronous: true
                             sourceSize.width: 420
-                            scale: ma.containsMouse ? 1.05 : 1
-                            Behavior on scale { NumberAnimation { duration: 200 } }
+                            scale: ma.containsMouse ? 1.06 : 1
+                            Behavior on scale { SpatialAnim { speed: "slow" } }
                         }
 
                         Rectangle {
@@ -102,9 +152,7 @@ Overlay {
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                Quickshell.execDetached([System.themeScript, "set", cell.filePath])
-                            }
+                            onClicked: Quickshell.execDetached([System.themeScript, "set", cell.filePath])
                         }
                     }
                 }

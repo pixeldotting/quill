@@ -27,9 +27,9 @@ Scope {
     PanelWindow {
         visible: server.trackedNotifications.values.length > 0
         anchors { top: true; right: true }
-        margins { top: 58; right: 12 }
-        implicitWidth: 380
-        implicitHeight: stack.implicitHeight
+        margins { top: 38; right: 0 }           // 20px внутреннего поля под тени
+        implicitWidth: 420
+        implicitHeight: stack.implicitHeight + 40
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
         WlrLayershell.layer: WlrLayer.Overlay
@@ -37,7 +37,9 @@ Scope {
 
         ColumnLayout {
             id: stack
-            width: parent.width
+            x: 20
+            y: 20
+            width: parent.width - 40
             spacing: 8
 
             Repeater {
@@ -53,6 +55,17 @@ Scope {
                     radius: Theme.radiusXl
                     color: critical ? Theme.errorContainer : Theme.surfaceContainerHigh
 
+                    // появление: слайд справа + fade (spatial / effects)
+                    opacity: 0
+                    transform: Translate {
+                        id: slide
+                        x: 40
+                        Behavior on x { SpatialAnim { speed: "default" } }
+                    }
+                    Component.onCompleted: { opacity = 1; slide.x = 0 }
+                    Behavior on opacity { EffectsNumber {} }
+
+                    Shadow { level: 2 }
                     HoverHandler { id: hover }
 
                     Timer {
@@ -91,6 +104,7 @@ Scope {
                                 visible: !img.visible
                                 text: card.critical ? "priority_high" : "notifications"
                                 size: 24
+                                filled: true
                                 color: card.critical ? Theme.onError : Theme.onPrimaryContainer
                             }
                         }
@@ -103,9 +117,8 @@ Scope {
                                 Layout.fillWidth: true
                                 Label {
                                     Layout.fillWidth: true
+                                    role: "titleMedium"
                                     text: card.modelData.summary
-                                    font.weight: Font.Medium
-                                    font.pixelSize: 15
                                     color: card.critical ? Theme.onErrorContainer : Theme.onSurface
                                 }
                                 IconButton {
@@ -126,7 +139,8 @@ Scope {
                                 maximumLineCount: 4
                                 elide: Text.ElideRight
                                 font.family: Theme.fontSans
-                                font.pixelSize: 13
+                                font.pixelSize: Theme.typeScale.bodyMedium.size
+                                font.letterSpacing: Theme.typeScale.bodyMedium.track
                                 color: card.critical ? Theme.onErrorContainer : Theme.onSurfaceVariant
                             }
 
@@ -137,22 +151,32 @@ Scope {
                                 Repeater {
                                     model: card.modelData.actions
                                     Rectangle {
+                                        id: actionBtn
                                         required property var modelData
-                                        implicitWidth: actionLabel.implicitWidth + 28
-                                        implicitHeight: 32
-                                        radius: 16
+                                        implicitWidth: actionLabel.implicitWidth + 32
+                                        implicitHeight: 36
+                                        radius: aMa.pressed ? Theme.radiusSm : height / 2
                                         color: Theme.secondaryContainer
+                                        Behavior on radius { SpatialAnim {} }
+                                        Rectangle {
+                                            anchors.fill: parent
+                                            radius: parent.radius
+                                            color: Theme.onSecondaryContainer
+                                            opacity: aMa.pressed ? Theme.statePress : aMa.containsMouse ? Theme.stateHover : 0
+                                        }
                                         Label {
                                             id: actionLabel
                                             anchors.centerIn: parent
-                                            text: parent.modelData.text
-                                            font.pixelSize: 13
+                                            role: "labelLarge"
+                                            text: actionBtn.modelData.text
                                             color: Theme.onSecondaryContainer
                                         }
                                         MouseArea {
+                                            id: aMa
                                             anchors.fill: parent
+                                            hoverEnabled: true
                                             cursorShape: Qt.PointingHandCursor
-                                            onClicked: parent.modelData.invoke()
+                                            onClicked: actionBtn.modelData.invoke()
                                         }
                                     }
                                 }
