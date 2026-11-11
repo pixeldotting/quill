@@ -63,7 +63,8 @@ step() {
     else
         printf '\n  %s◆%s  %s%s%s\n' "$PRI" "$RST" "$BOLD$PRI" "$*" "$RST"
     fi
-    printf '  %s%s%s\n' "$DIM" "$(printf '─%.0s' $(seq 1 56))" "$RST"
+    local w=$(( COLS - 4 )); if (( w > 56 )); then w=56; fi; if (( w < 20 )); then w=20; fi
+    printf '  %s%s%s\n' "$DIM" "$(printf '─%.0s' $(seq 1 "$w"))" "$RST"
     log "STEP $*"
 }
 
@@ -195,15 +196,28 @@ confirm() {
 
 # A list row: "name — description". The selected one is drawn as a pill (primary-container).
 # _row i_selected mark name desc name_width
+ROW_W=66
+# Row width = terminal width - 4 (max 66). Rows must NOT wrap: otherwise "cursor up N lines"
+# lands in the wrong place on redraw and the frames get duplicated.
+_setw() {
+    local c
+    c="$(tput cols 2>/dev/null || echo 80)"
+    ROW_W=$(( c - 4 ))
+    if (( ROW_W > 66 )); then ROW_W=66; fi
+    if (( ROW_W < 30 )); then ROW_W=30; fi
+}
 _row() {
-    local LC_ALL=C.UTF-8 sel=$1 mark=$2 name=$3 desc=$4 nw=$5 pad plain
-    plain="  ${mark}  ${name}$(printf '%*s' $(( nw - ${#name} )) '')  ${desc}"
-    pad=$(( 66 - ${#plain} )); if (( pad < 0 )); then pad=0; fi
+    local LC_ALL=C.UTF-8 sel=$1 mark=$2 name=$3 desc=$4 nw=$5 pad allowed npad
+    allowed=$(( ROW_W - nw - 7 ))
+    if (( allowed < 4 )); then desc=""
+    elif (( ${#desc} > allowed )); then desc="${desc:0:allowed-3}..."; fi
+    npad="$(printf '%*s' $(( nw - ${#name} )) '')"
     if [ "$sel" = 1 ]; then
-        printf '  %s%s  %s  %s%s%s  %s%*s%s\033[K\n' "$SELBG" "$SELFG" "$mark" "$BOLD" "$name$(printf '%*s' $(( nw - ${#name} )) '')" "$BOLD_OFF" "$desc" "$pad" "" "$RST"
+        pad=$(( ROW_W - (${#name} + ${#npad} + ${#desc} + 7) )); if (( pad < 0 )); then pad=0; fi
+        printf '  %s%s  %s  %s%s%s  %s%*s%s\033[K\n' "$SELBG" "$SELFG" "$mark" "$BOLD" "$name$npad" "$BOLD_OFF" "$desc" "$pad" "" "$RST"
         return 0
     fi
-    printf '    %s  %s%s%s  %s%s%s\033[K\n' "$mark" "$CHIPFG" "$name$(printf '%*s' $(( nw - ${#name} )) '')" "$RST" "$DIM" "$desc" "$RST"
+    printf '    %s  %s%s%s  %s%s%s\033[K\n' "$mark" "$CHIPFG" "$name$npad" "$RST" "$DIM" "$desc" "$RST"
 }
 _name() { local o=$1; if [[ "$o" == *" — "* ]]; then printf '%s' "${o%% — *}"; else printf '%s' "$o"; fi; }
 _desc() { local o=$1; if [[ "$o" == *" — "* ]]; then printf '%s' "${o#* — }"; fi; }
@@ -215,8 +229,9 @@ menu() {
     local title=$1 sel=$2; shift 2
     local -a opts=("$@"); local n=${#opts[@]} i key rest nw
     if ! interactive; then MENU_RESULT=$sel; return 0; fi
+    _setw
     nw="$(_maxw "${opts[@]}")"
-    printf '\n  %s%s%s   %s↑ ↓ / j k  ·  Enter%s\n\n' "$BOLD$PRI" "$title" "$RST" "$DIM" "$RST"
+    printf '\n  %s%s%s\n  %s↑ ↓ / j k  ·  Enter%s\n\n' "$BOLD$PRI" "$title" "$RST" "$DIM" "$RST"
     _draw() {
         local m
         for i in "${!opts[@]}"; do
@@ -252,8 +267,9 @@ multi() {
     done
     n=${#labels[@]}
     if interactive; then
+        _setw
         nw="$(_maxw "${labels[@]}")"
-        printf '\n  %s%s%s   %s↑ ↓  ·  Space toggles  ·  Enter confirms%s\n\n' "$BOLD$PRI" "$title" "$RST" "$DIM" "$RST"
+        printf '\n  %s%s%s\n  %s↑ ↓  ·  Space toggles  ·  Enter confirms%s\n\n' "$BOLD$PRI" "$title" "$RST" "$DIM" "$RST"
         _mdraw() {
             local mark
             for i in "${!labels[@]}"; do
@@ -286,10 +302,11 @@ multi() {
 
 # chips TEXT… — colored "chips" that wrap onto new lines
 chips() {
-    local LC_ALL=C.UTF-8 c line_len=0 first=1
+    local LC_ALL=C.UTF-8 c line_len=0 maxw=$(( COLS - 10 ))
+    if (( maxw > 58 )); then maxw=58; fi; if (( maxw < 16 )); then maxw=16; fi
     printf '      '
     for c in "$@"; do
-        if (( line_len + ${#c} + 3 > 58 && line_len > 0 )); then printf '\n      '; line_len=0; fi
+        if (( line_len + ${#c} + 3 > maxw && line_len > 0 )); then printf '\n      '; line_len=0; fi
         printf '%s%s %s %s ' "$CHIPBG" "$CHIPFG" "$c" "$RST"
         line_len=$(( line_len + ${#c} + 3 ))
     done
@@ -301,10 +318,10 @@ TERM_IDS=(ghostty foot kitty alacritty none)
 TERM_PKG=(ghostty foot kitty alacritty "")
 TERM_BIN=(ghostty foot kitty alacritty "")
 TERM_LABELS=(
-    "ghostty — fast, GPU-accelerated · COPR scottames/ghostty"
-    "foot — lightweight, Wayland-only · Fedora repos"
-    "kitty — GPU-accelerated, feature-rich · Fedora repos"
-    "alacritty — minimal · Fedora repos"
+    "ghostty — fast, GPU-accelerated, COPR scottames/ghostty"
+    "foot — lightweight, Wayland-only, Fedora repos"
+    "kitty — GPU-accelerated, feature-rich, Fedora repos"
+    "alacritty — minimal, Fedora repos"
     "none — Mod+Return will open nothing"
 )
 
@@ -369,8 +386,8 @@ ask() {
 
     # components
     multi "Extras" \
-        "Material Symbols — panel icon font · downloaded from GitHub, ≈10 MB|on" \
-        "Roboto Flex — Expressive typeface · downloaded from GitHub|on" \
+        "Material Symbols — panel icon font, downloaded from GitHub, ~10 MB|on" \
+        "Roboto Flex — Expressive typeface, downloaded from GitHub|on" \
         "adw-gtk3 — GTK3 apps in libadwaita style|on" \
         "polkit agent — password prompts for GUI apps|on" \
         "xwayland-satellite — X11 apps: Steam, legacy programs|off" \
@@ -396,29 +413,28 @@ build_plan() {
 show_plan() {
     step 3 "Installation plan"
     if (( NO_PKGS )); then
-        printf '\n  %sPackages%s  %s— skipped (--no-packages). Install them yourself:%s\n' "$BOLD" "$RST" "$DIM" "$RST"
+        printf '\n  %sPackages%s\n  %sSkipped (--no-packages). Install them yourself:%s\n' "$BOLD" "$RST" "$DIM" "$RST"
         chips "${PKGS[@]}"
     else
-        printf '\n  %sCOPR repositories%s  %s— third-party: these packages are built by volunteers, not by Fedora%s\n' "$BOLD" "$RST" "$DIM" "$RST"
+        printf '\n  %sCOPR repositories%s\n  %sThird-party: built by volunteers, not by Fedora%s\n' "$BOLD" "$RST" "$DIM" "$RST"
         local c
         for c in "${COPRS[@]}"; do
-            printf '      %s⬢%s %s%s%s  %shttps://copr.fedorainfracloud.org/coprs/%s%s\n' "$TER" "$RST" "$BOLD" "$c" "$RST" "$DIM" "$c" "$RST"
+            printf '      %s⬢%s %s%s%s\n        %shttps://copr.fedorainfracloud.org/coprs/%s%s\n' "$TER" "$RST" "$BOLD" "$c" "$RST" "$DIM" "$c" "$RST"
         done
-        printf '\n  %sPackages%s  %s(sudo dnf install)%s\n' "$BOLD" "$RST" "$DIM" "$RST"
+        printf '\n  %sPackages%s\n  %sInstalled with sudo dnf install%s\n' "$BOLD" "$RST" "$DIM" "$RST"
         chips "${PKGS[@]}"
     fi
     if (( OPT[0] || OPT[1] )); then
-        printf '\n  %sFonts%s  %s— https only, file format is verified%s\n' "$BOLD" "$RST" "$DIM" "$RST"
-        chips "github.com/google/material-design-icons" "github.com/google/fonts"
+        printf '\n  %sFonts%s\n  %sDownloaded over https only, file format is verified%s\n' "$BOLD" "$RST" "$DIM" "$RST"
+        chips "github.com/google" "material-design-icons" "fonts"
     fi
     local tsuffix=""; if [ -n "${TERM_PKG[CHOSEN]}" ]; then tsuffix=", ${TERM_IDS[CHOSEN]}"; fi
-    printf '\n  %sSymlinks in ~/.config%s  %s%s%s\n' "$BOLD" "$RST" "$DIM" "niri, quickshell, matugen, gtk-3.0, gtk-4.0${tsuffix}" "$RST"
-    printf '  %sBackup%s                 %sexisting files → %s%s\n' "$BOLD" "$RST" "$DIM" "${BACKUPS/#$HOME/~}" "$RST"
-    printf '  %sUninstall%s              %s./install.sh --uninstall%s\n' "$BOLD" "$RST" "$DIM" "$RST"
+    printf '\n  %sSymlinks in ~/.config%s\n  %sniri, quickshell, matugen, gtk-3.0, gtk-4.0%s%s\n' "$BOLD" "$RST" "$DIM" "$tsuffix" "$RST"
+    printf '\n  %sBackups%s\n  %sExisting files move to %s%s\n' "$BOLD" "$RST" "$DIM" "${BACKUPS/#$HOME/~}" "$RST"
+    printf '\n  %sUninstall%s\n  %s./install.sh --uninstall%s\n' "$BOLD" "$RST" "$DIM" "$RST"
     if (( DRY )); then printf '\n'; warn "--dry-run mode: nothing will be changed"; fi
     return 0
 }
-
 # ─────────────────────────── packages ───────────────────────────
 install_packages() {
     if (( NO_PKGS )); then return 0; fi
