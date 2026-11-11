@@ -58,13 +58,17 @@ cd ~/quill
 ./install.sh
 ```
 
+Run it from the session you already have: GNOME on a fresh Fedora Workstation install is fine, and so is a plain TTY. niri does not need to be running, because the installer is what installs it.
+
 The installer asks what to install, shows a plan and waits for confirmation:
 
 1. Terminal: ghostty, foot, kitty, alacritty or none.
 2. Extras: fonts, adw-gtk3, polkit agent, xwayland-satellite.
 3. Plan: which COPR repositories are enabled and which packages and files are touched.
 
-After it finishes, put wallpapers into `~/Pictures/Wallpapers`, log out, choose the Niri session on the login screen and press `Mod+W`.
+After it finishes, put wallpapers into `~/Pictures/Wallpapers`, log out of GNOME, choose the Niri session on the login screen (the gear icon next to the Sign In button in GDM) and press `Mod+W`.
+
+Note: the theme step also sets GNOME's color scheme and the adw-gtk3 theme through `gsettings`, so GTK apps in GNOME will pick up the Quill palette the next time they start.
 
 Requires a niri version that supports `include` in its config. The `yalter/niri` COPR provides one. Validate the config with `niri validate`.
 
