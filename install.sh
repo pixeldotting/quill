@@ -312,7 +312,7 @@ TERM_LABELS=(
 preflight() {
     step 1 "Checks"
     if [ "$(id -u)" -eq 0 ]; then die "Do not run this as root: the configs would end up in /root. I call sudo myself when it is needed."; fi
-    ok "running as a regular user ($USER)"
+    ok "running as a regular user (${USER:-$(id -un)})"
 
     local id="unknown" ver=""
     if [ -r /etc/os-release ]; then
@@ -321,12 +321,16 @@ preflight() {
     fi
     if [ "$id" = fedora ]; then ok "Fedora $ver"
     elif (( FORCE )); then warn "this is not Fedora ($id) — continuing because of --force"
+    elif (( DRY )); then warn "this is not Fedora ($id) — fine for a --dry-run preview, but a real install needs Fedora"
     else die "This script is made for Fedora (you have: $id). If you know what you are doing, run it with --force."; fi
 
     if (( ! NO_PKGS )); then
-        command -v sudo >/dev/null || die "sudo not found (needed for dnf)."
-        command -v dnf  >/dev/null || die "dnf not found."
-        ok "sudo and dnf are available"
+        local tools_ok=1
+        command -v sudo >/dev/null || tools_ok=0
+        command -v dnf  >/dev/null || tools_ok=0
+        if (( tools_ok )); then ok "sudo and dnf are available"
+        elif (( DRY )); then warn "sudo or dnf not found — fine for a --dry-run preview"
+        else die "sudo and dnf are required for the package step (use --no-packages to skip it)."; fi
     fi
 
     local f missing=0
