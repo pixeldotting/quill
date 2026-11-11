@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// Волнистый индикатор прогресса (M3 Expressive): активная часть — бегущая волна, остаток — ровный трек
+// Wavy progress indicator (M3 Expressive): the active part is a moving wave, the rest is a flat track
 Canvas {
     id: root
     property real value: 0
@@ -39,7 +39,7 @@ Canvas {
         const mid = height / 2
         const xEnd = r + Math.max(0, (width - thickness) * Math.min(1, value))
 
-        // трек
+        // track
         if (xEnd + gap < width - r) {
             ctx.strokeStyle = trackColor
             ctx.beginPath()
@@ -47,7 +47,7 @@ Canvas {
             ctx.lineTo(width - r, mid)
             ctx.stroke()
         }
-        // волна
+        // wave
         ctx.strokeStyle = activeColor
         ctx.beginPath()
         const k = (Math.PI * 2) / wavelength

@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// Слайдер M3 Expressive: толстый трек (44), ручка-«штрих» с зазорами, внешние углы — пилюля, внутренние — 4dp.
+// M3 Expressive slider: thick track (44), a bar handle with gaps, pill outer corners, 4dp inner corners.
 Item {
     id: root
     property string icon
@@ -14,7 +14,7 @@ Item {
 
     implicitHeight: 52
 
-    // активная часть
+    // active part
     Rectangle {
         y: (root.height - root.trackH) / 2
         height: root.trackH
@@ -25,7 +25,7 @@ Item {
         topRightRadius: Theme.radiusXs
         bottomRightRadius: Theme.radiusXs
     }
-    // неактивная часть
+    // inactive part
     Rectangle {
         x: root.hx + root.gap
         y: (root.height - root.trackH) / 2
@@ -37,7 +37,7 @@ Item {
         topRightRadius: 22
         bottomRightRadius: 22
     }
-    // ручка (при нажатии сужается)
+    // handle (gets thinner while pressed)
     Rectangle {
         x: Math.max(0, Math.min(root.width - width, root.hx - width / 2))
         anchors.verticalCenter: parent.verticalCenter

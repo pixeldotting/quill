@@ -6,13 +6,13 @@ import Quickshell.Services.Pipewire
 import Quickshell.Services.UPower
 import Quickshell.Services.Mpris
 
-// Звук, батарея, сеть, яркость, медиа, тёмная/светлая тема
+// Audio, battery, network, brightness, media, dark/light theme
 Singleton {
     id: root
 
     readonly property string themeScript: Quickshell.shellDir + "/scripts/theme.sh"
 
-    // ---------- звук ----------
+    // ---------- audio ----------
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property real volume: sink?.audio ? sink.audio.volume : 0
     readonly property bool muted: sink?.audio ? sink.audio.muted : false
@@ -31,7 +31,7 @@ Singleton {
         : volume < 0.34 ? "volume_mute"
         : volume < 0.67 ? "volume_down" : "volume_up"
 
-    // ---------- батарея ----------
+    // ---------- battery ----------
     readonly property var battery: UPower.displayDevice
     readonly property bool hasBattery: battery ? battery.isLaptopBattery : false
     readonly property int batteryPercent: battery ? Math.round(battery.percentage * 100) : 0
@@ -45,7 +45,7 @@ Singleton {
         : batteryPercent >= 30 ? "battery_3_bar"
         : batteryPercent >= 15 ? "battery_2_bar" : "battery_alert"
 
-    // ---------- сеть (через nmcli) ----------
+    // ---------- network (via nmcli) ----------
     property string netKind: ""
     property string netName: ""
     readonly property bool netConnected: netKind !== ""
@@ -79,7 +79,7 @@ Singleton {
         onTriggered: netProc.running = true
     }
 
-    // ---------- яркость (brightnessctl) ----------
+    // ---------- brightness (brightnessctl) ----------
     property bool hasBrightness: false
     property real brightness: 0
 
@@ -110,10 +110,10 @@ Singleton {
     }
     Component.onCompleted: refreshBrightness()
 
-    // ---------- медиа (MPRIS) ----------
+    // ---------- media (MPRIS) ----------
     readonly property var player: Mpris.players.values.length > 0 ? Mpris.players.values[0] : null
 
-    // ---------- стиль палитры и контраст (читает/пишет theme.sh) ----------
+    // ---------- palette style and contrast (read/written by theme.sh) ----------
     property string scheme: "scheme-tonal-spot"
     property real contrast: 0
 
@@ -141,7 +141,7 @@ Singleton {
         onLoaded: root.contrast = parseFloat(text().trim()) || 0
     }
 
-    // ---------- тёмная / светлая тема ----------
+    // ---------- dark / light theme ----------
     property bool dark: true
 
     function setDark(v) {

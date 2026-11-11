@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Мост к niri через `niri msg -j` + event-stream
+// Bridge to niri via `niri msg -j` + event-stream
 Singleton {
     id: root
 

@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// Иконка-кнопка M3 Expressive: state layers (hover 8% / press 10%), при нажатии форма морфится из круга в скруглённый квадрат
+// M3 Expressive icon button: state layers (hover 8% / press 10%); on press the shape morphs from a circle to a rounded square
 Item {
     id: root
     property string icon

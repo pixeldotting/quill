@@ -6,7 +6,7 @@ import Quickshell.Services.Notifications
 import qs.services
 import qs.components
 
-// Демон уведомлений (вместо mako/dunst/swaync)
+// Notification daemon (instead of mako/dunst/swaync)
 Scope {
     id: root
 
@@ -18,7 +18,7 @@ Scope {
         keepOnReload: false
 
         onNotification: n => {
-            // «Не беспокоить» пропускает только критические
+            // Do Not Disturb lets only critical notifications through
             if (!UiState.dnd || n.urgency === NotificationUrgency.Critical)
                 n.tracked = true
         }
@@ -27,7 +27,7 @@ Scope {
     PanelWindow {
         visible: server.trackedNotifications.values.length > 0
         anchors { top: true; right: true }
-        margins { top: 38; right: 0 }           // 20px внутреннего поля под тени
+        margins { top: 38; right: 0 }           // 20px of inner padding for shadows
         implicitWidth: 420
         implicitHeight: stack.implicitHeight + 40
         color: "transparent"
@@ -55,7 +55,7 @@ Scope {
                     radius: Theme.radiusXl
                     color: critical ? Theme.errorContainer : Theme.surfaceContainerHigh
 
-                    // появление: слайд справа + fade (spatial / effects)
+                    // entrance: slide in from the right + fade (spatial / effects)
                     opacity: 0
                     transform: Translate {
                         id: slide
@@ -79,7 +79,7 @@ Scope {
                         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 14 }
                         spacing: 12
 
-                        // иконка приложения / картинка
+                        // app icon / image
                         Rectangle {
                             Layout.alignment: Qt.AlignTop
                             implicitWidth: 44

@@ -6,8 +6,8 @@ import Quickshell.Widgets
 import qs.services
 import qs.components
 
-// Оформление: стиль палитры (Android: Tonal Spot / Expressive / Fruit Salad / Rainbow …), контраст
-// и выбор обоев из ~/Pictures/Wallpapers. Клик → перекрашивается вся система. Mod+W
+// Style: palette style (as on Android: Tonal Spot / Expressive / Fruit Salad / Rainbow …), contrast
+// and wallpaper choice from ~/Pictures/Wallpapers. Click → the whole system is recolored. Mod+W
 Overlay {
     id: win
     open: UiState.wallpapersOpen
@@ -36,13 +36,13 @@ Overlay {
                 Label {
                     Layout.fillWidth: true
                     role: "headlineSmall"
-                    text: "Оформление"
+                    text: "Style"
                 }
                 IconButton { icon: "close"; onClicked: win.dismissed() }
             }
 
-            // ---- стиль палитры ----
-            Label { role: "labelLarge"; text: "Стиль палитры"; color: Theme.onSurfaceVariant }
+            // ---- palette style ----
+            Label { role: "labelLarge"; text: "Palette style"; color: Theme.onSurfaceVariant }
             Flow {
                 Layout.fillWidth: true
                 spacing: 8
@@ -65,16 +65,16 @@ Overlay {
                 }
             }
 
-            // ---- контраст ----
-            Label { role: "labelLarge"; text: "Контраст"; color: Theme.onSurfaceVariant }
+            // ---- contrast ----
+            Label { role: "labelLarge"; text: "Contrast"; color: Theme.onSurfaceVariant }
             Flow {
                 Layout.fillWidth: true
                 spacing: 8
                 Repeater {
                     model: [
-                        { v: 0.0, name: "Стандартный" },
-                        { v: 0.5, name: "Средний" },
-                        { v: 1.0, name: "Высокий" }
+                        { v: 0.0, name: "Standard" },
+                        { v: 0.5, name: "Medium" },
+                        { v: 1.0, name: "High" }
                     ]
                     Chip {
                         required property var modelData
@@ -85,13 +85,13 @@ Overlay {
                 }
             }
 
-            // ---- обои ----
-            Label { role: "labelLarge"; text: "Обои"; color: Theme.onSurfaceVariant }
+            // ---- wallpapers ----
+            Label { role: "labelLarge"; text: "Wallpapers"; color: Theme.onSurfaceVariant }
             Label {
                 Layout.fillWidth: true
                 visible: grid.count === 0
                 role: "bodyMedium"
-                text: "Положи картинки в ~/Pictures/Wallpapers"
+                text: "Put some images in ~/Pictures/Wallpapers"
                 color: Theme.onSurfaceVariant
             }
 
@@ -122,7 +122,7 @@ Overlay {
                     ClippingRectangle {
                         anchors.fill: parent
                         anchors.margins: 5
-                        // текущие обои — «таблетка»-скругление, hover — мягче
+                        // current wallpaper — larger radius, hover — softer
                         radius: cell.current ? Theme.radiusXl : (ma.containsMouse ? Theme.radiusLgInc : Theme.radiusLg)
                         color: Theme.surfaceContainerHighest
                         border.width: cell.current ? 3 : 0

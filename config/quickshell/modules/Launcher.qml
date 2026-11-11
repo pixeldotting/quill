@@ -4,8 +4,8 @@ import Quickshell
 import qs.services
 import qs.components
 
-// Лаунчер (вместо rofi/wofi). Mod+Space.
-// Список — «сегментированный» (M3 Expressive): крайние элементы крупно скруглены, внутренние 4dp, выбранный морфится в пилюлю.
+// App launcher (instead of rofi/wofi). Mod+Space.
+// The list is "segmented" (M3 Expressive): outer items have large corners, inner ones 4dp, the selected one morphs into a pill.
 Overlay {
     id: win
     open: UiState.launcherOpen
@@ -56,7 +56,7 @@ Overlay {
         scale: 0.9 + 0.1 * win.pop
 
         Shadow { level: 3 }
-        MouseArea { anchors.fill: parent }   // не пропускать клики на scrim
+        MouseArea { anchors.fill: parent }   // don't let clicks fall through to the scrim
 
         ColumnLayout {
             id: col
@@ -83,7 +83,7 @@ Overlay {
                             anchors.verticalCenter: parent.verticalCenter
                             visible: input.text === ""
                             role: "bodyLarge"
-                            text: "Поиск приложений"
+                            text: "Search apps"
                             color: Theme.onSurfaceVariant
                         }
                         TextInput {

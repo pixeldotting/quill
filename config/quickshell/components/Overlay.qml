@@ -3,8 +3,8 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Полноэкранный оверлей: клик вне карточки или Esc → dismissed().
-// progress (effects) — для opacity; pop (expressive spatial, с перерегулированием) — для scale.
+// Fullscreen overlay: click outside the card or press Esc → dismissed().
+// progress (effects) drives opacity; pop (expressive spatial, with overshoot) drives scale.
 PanelWindow {
     id: root
     property bool open: false

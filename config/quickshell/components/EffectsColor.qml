@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// M3 Expressive effects motion для цвета
+// M3 Expressive effects motion for colors
 ColorAnimation {
     property string speed: "default"
     duration: speed === "slow" ? Theme.durEffectsSlow : speed === "fast" ? Theme.durEffectsFast : Theme.durEffectsDefault

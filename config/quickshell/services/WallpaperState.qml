@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Текущие обои (путь пишет scripts/theme.sh)
+// Current wallpaper (the path is written by scripts/theme.sh)
 Singleton {
     id: root
     property string path: ""

@@ -2,7 +2,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Общее состояние оверлеев. toggle("launcher" | "controlCenter" | "powerMenu" | "wallpapers")
+// Shared overlay state. toggle("launcher" | "controlCenter" | "powerMenu" | "wallpapers")
 Singleton {
     id: root
 

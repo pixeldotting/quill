@@ -1,76 +1,56 @@
 <div align="center">
 
-<img src="assets/logo.svg" width="128" alt="Quill logo">
+<img src="assets/logo.svg" width="112" alt="Quill logo">
 
 # Quill
 
-**Material You для niri + Quickshell на Fedora**
-<br>
-<sub>A complete Material 3 Expressive desktop for the niri compositor, built entirely on Quickshell.</sub>
+Material You desktop for niri and Quickshell, on Fedora.
 
-<br>
+![Fedora](https://img.shields.io/badge/Fedora-51A2DA?style=flat-square&logo=fedora&logoColor=white)
+![niri](https://img.shields.io/badge/compositor-niri-6750A4?style=flat-square)
+![Quickshell](https://img.shields.io/badge/shell-Quickshell-4F378B?style=flat-square)
+![Material 3](https://img.shields.io/badge/design-Material_3_Expressive-D0BCFF?style=flat-square&labelColor=381E72)
+![License](https://img.shields.io/badge/license-MIT-EFB8C8?style=flat-square&labelColor=492532)
 
-![Fedora](https://img.shields.io/badge/Fedora-51A2DA?style=for-the-badge&logo=fedora&logoColor=white)
-![niri](https://img.shields.io/badge/niri-scrollable_tiling-6750A4?style=for-the-badge)
-![Quickshell](https://img.shields.io/badge/Quickshell-QML-4F378B?style=for-the-badge)
-![Material 3](https://img.shields.io/badge/Material_3-Expressive-D0BCFF?style=for-the-badge&labelColor=381E72)
-![License](https://img.shields.io/badge/license-MIT-EFB8C8?style=for-the-badge&labelColor=492532)
-
-<img src="assets/banner.svg" alt="Quill banner">
+<img src="assets/banner.svg" alt="Quill">
 
 </div>
 
-<br>
+## Overview
 
-## ✨ Что это
+Quill is a complete desktop shell for the [niri](https://github.com/YaLTeR/niri) compositor, written in QML on top of [Quickshell](https://quickshell.org). It replaces waybar, rofi, wofi, mako and swww with a single, consistent shell.
 
-Весь рабочий стол — **на Quickshell**: никаких waybar, rofi, wofi, mako, swww. Цвета берутся из обоев (Material You / Dynamic Color), а оформление следует системе Material 3 целиком, а не только палитре.
+Colors are generated from your wallpaper with [matugen](https://github.com/InioX/matugen). The design follows the whole Material 3 system, not only its palette: shape, typography, motion, state layers and elevation are all implemented. Changing the wallpaper recolors the shell, niri, your terminal and GTK applications.
 
-> Выбрал обои → перекрасилась панель, niri, терминал и GTK-приложения.
+## Design system
 
-<br>
-
-## 🎨 Material You — это не только цвет
-
-| Слой | Как сделано |
+| Layer | Implementation |
 |---|---|
-| **Цвет** | [matugen](https://github.com/InioX/matugen): обои → tonal-палитры → ~30 ролей (`primary`, `on_surface`, `surface_container_high` …). Стили палитры и 3 уровня контраста |
-| **Форма** | Шкала скруглений M3: 4 · 8 · 12 · 16 · 20 · 28 · 32 · 48 · full. Кнопки, тайлы и пункты списка морфятся при нажатии и выборе |
-| **Типографика** | 15 ролей M3 (display … label): размеры, межстрочный интервал, трекинг; Roboto Flex; emphasized-варианты |
-| **Движение** | Токены M3 Expressive: *spatial* (пружина с перерегулированием) и *effects* (цвет, прозрачность) |
-| **State layers** | hover 8 %, focus / press 10 % |
-| **Elevation** | Тональные поверхности + тени уровней 1–5 |
-| **Компоненты** | Search bar, сегментированный список, toggle-тайлы, слайдер Expressive, filter chips, волнистый индикатор, filled-иконки |
+| Color | Wallpaper to tonal palettes to 30+ color roles (`primary`, `on_surface`, `surface_container_high`, ...). Seven palette styles and three contrast levels. |
+| Shape | The M3 corner scale: 4, 8, 12, 16, 20, 28, 32, 48, full. Buttons, tiles and list items change shape on press and selection. |
+| Typography | All 15 M3 type roles with real sizes, line heights and tracking. Roboto Flex, with emphasized variants. |
+| Motion | M3 Expressive tokens: spring-like spatial motion for size and shape, plain effects motion for color and opacity. |
+| State layers | Hover 8%, focus and press 10%. |
+| Elevation | Tonal surfaces, plus shadows for levels 1 to 5. |
+| Components | Search bar, segmented list, toggle tiles, Expressive slider, filter chips, wavy progress indicator, filled icons for selected state. |
 
-<br>
+## Components
 
-## 🧩 Что внутри
-
-| | Чем сделано |
+| Part | Description |
 |---|---|
-| 🪟 Композитор | **niri** |
-| 📊 Панель | три «островка»: рабочие столы · часы · трей и статус |
-| 🔍 Лаунчер | поиск приложений вместо rofi / wofi |
-| 🔔 Уведомления | собственный демон вместо mako / dunst |
-| 🎛 Центр управления | сеть, тема, «не беспокоить», громкость, яркость, медиа |
-| 🔊 OSD | громкость с волнистым индикатором |
-| 🖼 Оформление | выбор обоев, стиля палитры и контраста |
-| ⏻ Питание | сон · выход · перезагрузка · выключение |
-| 🌄 Обои, idle | рисует сам Quickshell |
-| 🖥 Терминал / GTK | **ghostty**, GTK 3/4 (libadwaita, adw-gtk3) — красятся тем же matugen |
+| Bar | Three islands: workspaces, clock, tray and status. |
+| Launcher | Application search. |
+| Notifications | Notification daemon with actions, urgency and do-not-disturb. |
+| Control center | Network, theme, do-not-disturb, volume, brightness, media. |
+| OSD | Volume indicator. |
+| Style | Wallpaper, palette style and contrast picker. |
+| Power menu | Sleep, log out, restart, shut down. |
+| Wallpaper, idle | Rendered and handled by Quickshell. |
+| Terminal and GTK | ghostty, foot, kitty or alacritty (chosen at install time), plus GTK 3 and 4, all recolored by the same matugen run. |
 
-Единственное не-Quickshell: polkit-агент (`polkit-gnome`) — без него не работают окна ввода пароля.
+The only piece that is not part of the shell is the polkit agent (`polkit-gnome`), which GUI applications need for password prompts.
 
-<br>
-
-## 🖼 Скриншоты
-
-> Положи скриншоты в `assets/screenshots/` и подключи сюда:
-> `![desktop](assets/screenshots/desktop.png)`
-
-<br>
-
-## 🚀 Установка
+## Installation
 
 ```bash
 git clone https://github.com/pixeldotting/quill ~/quill
@@ -78,95 +58,104 @@ cd ~/quill
 ./install.sh
 ```
 
-Скрипт подключает COPR (niri, quickshell, matugen, ghostty), ставит пакеты и шрифты (Material Symbols, Roboto Flex), делает симлинки в `~/.config` и генерирует первую тему. Существующие конфиги не теряются — они переименовываются в `*.bak.*`.
+The installer asks what to install, shows a plan and waits for confirmation:
 
-Дальше:
-1. Положи обои в `~/Pictures/Wallpapers`
-2. Выйди из сессии и выбери **Niri** на экране входа
-3. `Mod+W` → выбери обои
+1. Terminal: ghostty, foot, kitty, alacritty or none.
+2. Extras: fonts, adw-gtk3, polkit agent, xwayland-satellite.
+3. Plan: which COPR repositories are enabled and which packages and files are touched.
 
-> **Нужно:** niri с поддержкой `include` в конфиге (свежий, из COPR `yalter/niri`). Проверка конфига: `niri validate`.
+After it finishes, put wallpapers into `~/Pictures/Wallpapers`, log out, choose the Niri session on the login screen and press `Mod+W`.
 
-<br>
+Requires a niri version that supports `include` in its config. The `yalter/niri` COPR provides one. Validate the config with `niri validate`.
 
-## ⌨️ Горячие клавиши
+### Installer safety
 
-`Mod` = Super.
+- Never runs as root. `sudo` is used only for `dnf`, after the exact commands are shown and confirmed.
+- COPR repositories are third-party. Each one is listed with a link before it is enabled.
+- Fonts are downloaded over HTTPS into a temporary directory, with a file format check and a size limit.
+- Existing files are never overwritten. They are moved to `~/.local/share/quill/backups/`.
+- Every change is recorded in a manifest. `./install.sh --uninstall` removes the links and restores the backups.
+- Safe to run more than once. The log is written to `~/.local/state/quill/install.log`.
 
-| Клавиши | Действие |
+### Options
+
+| Option | Effect |
 |---|---|
-| `Mod + Space` | лаунчер |
-| `Mod + C` | центр управления |
-| `Mod + W` | оформление и обои |
-| `Mod + Shift + E` | меню питания |
-| `Mod + Return` | терминал |
-| `Mod + Q` | закрыть окно |
-| `Mod + Tab` | overview |
-| `Mod + ←/→` или `H/L` | фокус между колонками |
-| `Mod + Ctrl + ←/→` | переместить колонку |
-| `Mod + 1…9` | рабочий стол |
-| `Mod + F` · `Mod + Shift + F` | развернуть колонку · полный экран |
-| `Print` · `Ctrl + Print` · `Alt + Print` | скриншот: область · экран · окно |
-| `Mod + Shift + /` | список всех клавиш |
+| `-y`, `--yes` | Ask nothing, use defaults. |
+| `-n`, `--dry-run` | Show what would be done without changing anything. |
+| `--terminal=NAME` | `ghostty`, `foot`, `kitty`, `alacritty` or `none`. |
+| `--no-packages` | Do not touch dnf or COPR. |
+| `--no-fonts` | Do not download fonts. |
+| `--uninstall` | Remove the links and restore backups. Packages are kept. |
+| `--force` | Continue past failed checks, for example on a non-Fedora system. |
 
-<br>
+## Hotkeys
 
-## 🎛 Как менять тему
+`Mod` is the Super key. `Mod+Shift+/` shows the full list inside niri.
 
-- **`Mod + W`** — выбор обоев, стиля палитры (Tonal spot, Expressive, Fruit salad, Rainbow, Fidelity, Neutral, Monochrome) и контраста.
-- Светлая / тёмная тема — тайл «Тема» в центре управления.
-- Из терминала:
+| Keys | Action |
+|---|---|
+| `Mod+Space` | Launcher |
+| `Mod+C` | Control center |
+| `Mod+W` | Wallpapers and style |
+| `Mod+Shift+E` | Power menu |
+| `Mod+Return` | Terminal |
+| `Mod+Q` | Close window |
+| `Mod+Tab` | Overview |
+| `Mod+Left`, `Mod+Right` (or `H`, `L`) | Focus column |
+| `Mod+Ctrl+Left`, `Mod+Ctrl+Right` | Move column |
+| `Mod+1` to `Mod+9` | Switch workspace |
+| `Mod+F`, `Mod+Shift+F` | Maximize column, fullscreen |
+| `Print`, `Ctrl+Print`, `Alt+Print` | Screenshot: region, screen, window |
+
+## Theming
+
+`Mod+W` opens the style window: pick a wallpaper, a palette style (Tonal spot, Expressive, Fruit salad, Rainbow, Fidelity, Neutral, Monochrome) and a contrast level. The light and dark switch is in the control center.
+
+The same controls are available from a shell:
 
 ```bash
-~/.config/quickshell/scripts/theme.sh set ~/Pictures/Wallpapers/pic.jpg
-~/.config/quickshell/scripts/theme.sh color "#6750A4"      # тема от цвета, без обоев
-~/.config/quickshell/scripts/theme.sh scheme scheme-expressive
-~/.config/quickshell/scripts/theme.sh contrast 0.5
-~/.config/quickshell/scripts/theme.sh mode light
+THEME=~/.config/quickshell/scripts/theme.sh
+$THEME set ~/Pictures/Wallpapers/image.jpg
+$THEME color "#6750A4"               # seed color instead of a wallpaper
+$THEME scheme scheme-expressive
+$THEME contrast 0.5
+$THEME mode light
 ```
 
-<br>
-
-## 🗂 Структура
+## Repository layout
 
 ```
-quill/
-├── install.sh
-├── assets/                  логотип, баннер, скриншоты
-└── config/
-    ├── niri/config.kdl
-    ├── matugen/             config.toml + шаблоны (quickshell, niri, ghostty, GTK)
-    ├── ghostty/config
-    ├── gtk-3.0/  gtk-4.0/
-    └── quickshell/
-        ├── shell.qml        точка входа + IPC
-        ├── services/        Theme (токены M3) · Niri · System · UiState · WallpaperState
-        ├── components/      Icon · Label · IconButton · Pill · Tile · Chip · ValueSlider
-        │                    WavyProgress · Shadow · Overlay · SpatialAnim · Effects*
-        ├── modules/         Bar · Launcher · ControlCenter · Notifications · Osd
-        │                    PowerMenu · WallpaperPicker · Wallpaper
-        └── scripts/theme.sh
+install.sh
+assets/                    logo, banner, screenshots
+config/
+  niri/config.kdl
+  matugen/                 config.base.toml, terminals/, templates/
+  ghostty/  foot/  kitty/  alacritty/
+  gtk-3.0/  gtk-4.0/
+  quickshell/
+    shell.qml              entry point and IPC
+    services/              Theme (M3 tokens), Niri, System, UiState, WallpaperState
+    components/            Icon, Label, IconButton, Pill, Tile, Chip, ValueSlider,
+                           WavyProgress, Shadow, Overlay, motion helpers
+    modules/               Bar, Launcher, ControlCenter, Notifications, Osd,
+                           PowerMenu, WallpaperPicker, Wallpaper
+    scripts/theme.sh
 ```
 
-Quickshell перезагружается сам при сохранении QML-файлов. Логи: `qs log`.
+Quickshell reloads automatically when a QML file is saved. Logs: `qs log`.
 
-<br>
+## Known limitations
 
-## ⚠️ Известные ограничения
+- No lock screen. A mistake in session-lock or PAM code can leave a session locked with no way out, so it is left out until it can be tested properly.
+- The network tile shows status only. Use `nmtui` or `nmcli` to connect.
+- Qt and KDE applications are not recolored. That needs qt6ct and an additional matugen template.
+- Written without testing on a live system. If something fails to start, open an issue with the output of `qs log`.
 
-- **Экран блокировки не сделан.** Осознанно: ошибка в WlSessionLock / PAM может оставить сессию заблокированной без выхода.
-- Сеть в центре управления — только статус (подключаться через `nmtui` / `nmcli`).
-- Qt / KDE-приложения не красятся (нужен qt6ct и шаблон matugen).
-- Проект написан без проверки на живой системе — если что-то не запускается, открой issue с выводом `qs log`.
+## Credits
 
-<br>
+[niri](https://github.com/YaLTeR/niri), [Quickshell](https://quickshell.org), [matugen](https://github.com/InioX/matugen), [Material Design 3](https://m3.material.io), [ghostty](https://ghostty.org), [foot](https://codeberg.org/dnkl/foot), [kitty](https://sw.kovidgoyal.net/kitty/), [alacritty](https://alacritty.org).
 
-## 🙏 Благодарности
+## License
 
-[niri](https://github.com/YaLTeR/niri) · [Quickshell](https://quickshell.org) · [matugen](https://github.com/InioX/matugen) · [Material Design 3](https://m3.material.io) · [ghostty](https://ghostty.org)
-
-<br>
-
-<div align="center">
-<sub>MIT © pixeldotting</sub>
-</div>
+MIT. See [LICENSE](LICENSE).

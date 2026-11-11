@@ -3,13 +3,13 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Material 3 / Material You токены: цвет, форма, типографика, движение, state layers, elevation.
-// Цвета читаются из ~/.local/state/material/colors.json (пишет matugen) и обновляются на лету.
-// Значения по умолчанию — baseline-тема M3 (dark).
+// Material 3 / Material You tokens: color, shape, typography, motion, state layers, elevation.
+// Colors are read from ~/.local/state/material/colors.json (written by matugen) and update live.
+// Defaults are the M3 baseline theme (dark).
 Singleton {
     id: root
 
-    // ================= ЦВЕТ (29+ ролей) =================
+    // ================= COLOR (30+ roles) =================
     readonly property color primary: c.primary
     readonly property color onPrimary: c.on_primary
     readonly property color primaryContainer: c.primary_container
@@ -45,7 +45,7 @@ Singleton {
     readonly property color scrim: c.scrim
     readonly property color shadow: c.shadow
 
-    // ================= ФОРМА: M3 shape scale (+ Expressive) =================
+    // ================= SHAPE: M3 shape scale (+ Expressive) =================
     readonly property int radiusNone: 0
     readonly property int radiusXs: 4
     readonly property int radiusSm: 8
@@ -57,8 +57,8 @@ Singleton {
     readonly property int radiusXxl: 48
     // full = height / 2
 
-    // ================= ТИПОГРАФИКА: 15 ролей M3 =================
-    // Roboto Flex — шрифт M3 Expressive; если не установлен, Roboto.
+    // ================= TYPOGRAPHY: the 15 M3 roles =================
+    // Roboto Flex is the M3 Expressive typeface; falls back to Roboto if it isn't installed.
     readonly property string fontSans: Qt.fontFamilies().indexOf("Roboto Flex") >= 0 ? "Roboto Flex" : "Roboto"
     readonly property string fontIcon: "Material Symbols Rounded"
     readonly property var typeScale: ({
@@ -79,9 +79,9 @@ Singleton {
         labelSmall: { size: 11, line: 16, weight: 500, track: 0.5 }
     })
 
-    // ================= ДВИЖЕНИЕ: M3 Expressive =================
-    // spatial (размер, позиция, морф формы) — пружина с лёгким перерегулированием;
-    // effects (цвет, прозрачность) — без перерегулирования.
+    // ================= MOTION: M3 Expressive =================
+    // spatial (size, position, shape morph) — a spring with slight overshoot;
+    // effects (color, opacity) — no overshoot.
     readonly property var spatialFast:    [0.42, 1.67, 0.21, 0.90, 1, 1]
     readonly property var spatialDefault: [0.38, 1.21, 0.22, 1.00, 1, 1]
     readonly property var spatialSlow:    [0.39, 1.29, 0.35, 0.98, 1, 1]

@@ -4,7 +4,7 @@ import Quickshell
 import qs.services
 import qs.components
 
-// Меню питания. Mod+Shift+E. Кнопки — крупные «цветочные» квадраты: на hover/press форма пружинит.
+// Power menu. Mod+Shift+E. Big squircle buttons: the shape springs on hover/press.
 Overlay {
     id: win
     open: UiState.powerMenuOpen
@@ -34,10 +34,10 @@ Overlay {
 
             Repeater {
                 model: [
-                    { icon: "bedtime",            label: "Сон",          danger: false, cmd: ["systemctl", "suspend"] },
-                    { icon: "logout",             label: "Выйти",        danger: false, cmd: ["niri", "msg", "action", "quit", "--skip-confirmation"] },
-                    { icon: "restart_alt",        label: "Перезагрузка", danger: false, cmd: ["systemctl", "reboot"] },
-                    { icon: "power_settings_new", label: "Выключить",    danger: true,  cmd: ["systemctl", "poweroff"] }
+                    { icon: "bedtime",            label: "Sleep",        danger: false, cmd: ["systemctl", "suspend"] },
+                    { icon: "logout",             label: "Log out",      danger: false, cmd: ["niri", "msg", "action", "quit", "--skip-confirmation"] },
+                    { icon: "restart_alt",        label: "Restart",       danger: false, cmd: ["systemctl", "reboot"] },
+                    { icon: "power_settings_new", label: "Shut down",    danger: true,  cmd: ["systemctl", "poweroff"] }
                 ]
 
                 ColumnLayout {
@@ -49,7 +49,7 @@ Overlay {
                         Layout.alignment: Qt.AlignHCenter
                         implicitWidth: 96
                         implicitHeight: 96
-                        // форма: покой — 28, hover — почти круг, нажатие — 16
+                        // shape: idle — 28, hover — almost a circle, press — 16
                         radius: ma.pressed ? Theme.radiusLg : (ma.containsMouse ? 48 : Theme.radiusXl)
                         color: ma.containsMouse
                             ? (item.modelData.danger ? Theme.error : Theme.primary)

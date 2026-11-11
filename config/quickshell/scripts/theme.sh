@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Генератор темы Material You (обёртка над matugen).
-#   theme.sh set <картинка>      — поставить обои и перекрасить всё (niri, quickshell, ghostty, GTK)
-#   theme.sh color <#hex>        — тема от seed-цвета, без обоев
-#   theme.sh mode dark|light     — тёмная / светлая
-#   theme.sh scheme <имя>        — стиль палитры: scheme-tonal-spot (по умолчанию, классический Material You),
+# Material You theme generator (a wrapper around matugen).
+#   theme.sh set <image>         — set the wallpaper and recolor everything (niri, quickshell, terminal, GTK)
+#   theme.sh color <#hex>        — theme from a seed color, no wallpaper
+#   theme.sh mode dark|light     — dark / light
+#   theme.sh scheme <name>       — palette style: scheme-tonal-spot (default, classic Material You),
 #                                  scheme-expressive, scheme-fruit-salad, scheme-rainbow,
 #                                  scheme-fidelity, scheme-content, scheme-neutral, scheme-monochrome
-#   theme.sh contrast <-1..1>    — контраст (0 стандартный, 0.5 средний, 1 высокий)
-#   theme.sh restore             — пересобрать из сохранённого состояния (вызывается при старте)
+#   theme.sh contrast <-1..1>    — contrast (0 standard, 0.5 medium, 1 high)
+#   theme.sh restore             — rebuild from the saved state (runs at startup)
 set -euo pipefail
 
 STATE="${XDG_STATE_HOME:-$HOME/.local/state}/material"

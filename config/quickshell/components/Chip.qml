@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// Filter chip M3: выбранный — secondary-container + галочка
+// M3 filter chip: selected = secondary-container + checkmark
 Rectangle {
     id: root
     property string text

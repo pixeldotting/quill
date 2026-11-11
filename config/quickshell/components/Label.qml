@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// Текст по типошкале M3. role: displayLarge … labelSmall. emphasized: вариант M3 Expressive (жирнее).
+// Text on the M3 type scale. role: displayLarge … labelSmall. emphasized: the M3 Expressive variant (bolder).
 Text {
     property string role: "bodyMedium"
     property bool emphasized: false

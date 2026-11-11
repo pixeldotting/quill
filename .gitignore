@@ -1,3 +1,6 @@
 *.bak.*
 .DS_Store
 *.swp
+# helper symlinks created by install.sh (see the comment there)
+config/niri/colors.kdl
+config/niri/terminal.kdl

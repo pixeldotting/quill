@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// Toggle-тайл быстрых настроек. Нажатие: пилюля → скруглённый прямоугольник (пружина). Активный: primary + filled-иконка.
+// Quick-settings toggle tile. Press: pill → rounded rectangle (spring). Active: primary + filled icon.
 Rectangle {
     id: root
     property string icon

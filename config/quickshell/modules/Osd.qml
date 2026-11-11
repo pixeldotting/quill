@@ -5,7 +5,7 @@ import Quickshell.Wayland
 import qs.services
 import qs.components
 
-// OSD громкости с волнистым индикатором (M3 Expressive). Срабатывает на клавиши громкости (wpctl).
+// Volume OSD with a wavy indicator (M3 Expressive). Triggered by the volume keys (wpctl).
 Scope {
     id: root
     property bool shown: false
@@ -17,7 +17,7 @@ Scope {
         hideTimer.restart()
     }
 
-    Timer { interval: 2500; running: true; onTriggered: root.ready = true }   // не мигать при старте
+    Timer { interval: 2500; running: true; onTriggered: root.ready = true }   // don't flash at startup
     Timer { id: hideTimer; interval: 1800; onTriggered: root.shown = false }
 
     Connections {
@@ -29,12 +29,12 @@ Scope {
     PanelWindow {
         visible: root.shown
         anchors.bottom: true
-        margins.bottom: 48                  // 24px внутреннего поля под тень
+        margins.bottom: 48                  // 24px of inner padding for the shadow
         implicitWidth: 348
         implicitHeight: 112
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
-        mask: Region {}                     // клики проходят насквозь
+        mask: Region {}                     // clicks pass through
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.namespace: "qs-osd"
 

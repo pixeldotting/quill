@@ -4,7 +4,7 @@ import Quickshell
 import qs.services
 import qs.components
 
-// Центр управления: сеть, тема, DND, обои, громкость, яркость, медиа. Mod+C
+// Control center: network, theme, DND, wallpapers, volume, brightness, media. Mod+C
 Overlay {
     id: win
     open: UiState.controlCenterOpen
@@ -32,7 +32,7 @@ Overlay {
             anchors { left: parent.left; right: parent.right; top: parent.top; margins: 20 }
             spacing: 12
 
-            // Тайлы
+            // Tiles
             GridLayout {
                 Layout.fillWidth: true
                 columns: 2
@@ -41,33 +41,33 @@ Overlay {
 
                 Tile {
                     icon: System.netIcon
-                    title: "Сеть"
-                    subtitle: System.netConnected ? System.netName : "Не подключено"
+                    title: "Network"
+                    subtitle: System.netConnected ? System.netName : "Not connected"
                     active: System.netConnected
                 }
                 Tile {
                     icon: System.dark ? "dark_mode" : "light_mode"
-                    title: "Тема"
-                    subtitle: System.dark ? "Тёмная" : "Светлая"
+                    title: "Theme"
+                    subtitle: System.dark ? "Dark" : "Light"
                     active: true
                     onClicked: System.setDark(!System.dark)
                 }
                 Tile {
                     icon: UiState.dnd ? "notifications_off" : "notifications"
-                    title: "Не беспокоить"
-                    subtitle: UiState.dnd ? "Включено" : "Выключено"
+                    title: "Do not disturb"
+                    subtitle: UiState.dnd ? "On" : "Off"
                     active: UiState.dnd
                     onClicked: UiState.dnd = !UiState.dnd
                 }
                 Tile {
                     icon: "palette"
-                    title: "Оформление"
-                    subtitle: "Обои и палитра"
+                    title: "Style"
+                    subtitle: "Wallpaper & palette"
                     onClicked: UiState.toggle("wallpapers")
                 }
             }
 
-            // Громкость и яркость
+            // Volume and brightness
             RowLayout {
                 Layout.fillWidth: true
                 spacing: 8
@@ -90,7 +90,7 @@ Overlay {
                 onMoved: v => System.setBrightness(v)
             }
 
-            // Медиаплеер
+            // Media player
             Rectangle {
                 Layout.fillWidth: true
                 visible: System.player !== null
@@ -110,7 +110,7 @@ Overlay {
                         Label {
                             Layout.fillWidth: true
                             role: "titleMedium"
-                            text: System.player ? (System.player.trackTitle || "Без названия") : ""
+                            text: System.player ? (System.player.trackTitle || "Untitled") : ""
                         }
                         Label {
                             Layout.fillWidth: true

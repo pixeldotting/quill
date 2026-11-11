@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import qs.services
 
-// «Островок» панели: поверхность surface-container, радиус full
+// Bar "island": a surface-container with a full radius
 Rectangle {
     id: root
     default property alias content: row.data

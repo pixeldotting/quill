@@ -4,8 +4,8 @@ import Quickshell.Wayland
 import qs.modules
 import qs.services
 
-// Весь десктоп-шелл: обои, панель, лаунчер, уведомления, OSD, центр управления,
-// меню питания, выбор обоев, простой idle (выключить мониторы).
+// The whole desktop shell: wallpaper, bar, launcher, notifications, OSD, control center,
+// power menu, wallpaper picker, simple idle handling (monitors off).
 ShellRoot {
     Wallpaper {}
     Bar {}
@@ -16,7 +16,7 @@ ShellRoot {
     Notifications {}
     Osd {}
 
-    // Выключать экраны после 10 минут простоя (просыпаются от любого ввода)
+    // Turn the screens off after 10 minutes idle (any input wakes them)
     IdleMonitor {
         timeout: 600
         onIsIdleChanged: if (isIdle) Quickshell.execDetached(["niri", "msg", "action", "power-off-monitors"])

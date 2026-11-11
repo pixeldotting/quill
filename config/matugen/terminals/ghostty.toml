@@ -1,0 +1,4 @@
+
+[templates.ghostty]
+input_path  = '~/.config/matugen/templates/ghostty-colors'
+output_path = '~/.config/ghostty/colors'

@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Wayland
 import qs.services
 
-// Обои на слое Background — вместо swww/swaybg/hyprpaper
+// Wallpaper on the Background layer — instead of swww/swaybg/hyprpaper
 Variants {
     model: Quickshell.screens
 

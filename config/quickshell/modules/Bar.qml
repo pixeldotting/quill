@@ -6,7 +6,7 @@ import Quickshell.Services.SystemTray
 import qs.services
 import qs.components
 
-// Верхняя панель: три «островка» (слева / по центру / справа) на прозрачном фоне
+// Top bar: three "islands" (left / center / right) on a transparent background
 Variants {
     model: Quickshell.screens
 
@@ -26,7 +26,7 @@ Variants {
             precision: SystemClock.Minutes
         }
 
-        // ================= слева =================
+        // ================= left =================
         RowLayout {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
@@ -42,7 +42,7 @@ Variants {
                     onClicked: UiState.toggle("launcher")
                 }
 
-                // Рабочие столы: индикатор как в M3 Navigation bar — активный вытягивается в пилюлю primary
+                // Workspaces: an indicator like the M3 Navigation bar — the active one stretches into a primary pill
                 RowLayout {
                     spacing: 6
                     Repeater {
@@ -81,7 +81,7 @@ Variants {
             }
         }
 
-        // ================= по центру =================
+        // ================= center =================
         Pill {
             anchors.centerIn: parent
             padding: 18
@@ -98,13 +98,13 @@ Variants {
             }
         }
 
-        // ================= справа =================
+        // ================= right =================
         RowLayout {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             spacing: 8
 
-            // Трей
+            // Tray
             Pill {
                 visible: SystemTray.items.values.length > 0
                 Repeater {
@@ -148,7 +148,7 @@ Variants {
                 }
             }
 
-            // Статус: сеть, звук, батарея → центр управления
+            // Status: network, sound, battery → control center
             Pill {
                 clickable: true
                 padding: 14

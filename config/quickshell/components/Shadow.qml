@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Effects
 import qs.services
 
-// Тень по уровням M3 elevation (1…5 = 1, 3, 6, 8, 12 dp). Класть дочерним элементом карточки.
+// Shadow by M3 elevation level (1…5 = 1, 3, 6, 8, 12 dp). Put it inside a card as a child.
 RectangularShadow {
     property int level: 2
     readonly property var dp: [0, 1, 3, 6, 8, 12]

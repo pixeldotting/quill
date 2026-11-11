@@ -1,7 +1,7 @@
 import QtQuick
 import qs.services
 
-// Material Symbols Rounded (variable). text = имя иконки. filled — ось FILL (выбранное состояние в M3).
+// Material Symbols Rounded (variable). text = icon name. filled = the FILL axis (selected state in M3).
 Text {
     property real size: 24
     property bool filled: false
